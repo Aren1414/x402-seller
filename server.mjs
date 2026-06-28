@@ -2,21 +2,18 @@ import express from "express";
 import { paymentMiddleware, x402ResourceServer } from "@x402/express";
 import { ExactEvmScheme } from "@x402/evm/exact/server";
 import { HTTPFacilitatorClient } from "@x402/core/server";
+import { facilitator } from "@coinbase/x402";
 
 const app = express();
-
 
 const payTo = "0xb46043d161bde18ef6974217a686f381b1e91138";
 
 
-const facilitatorClient = new HTTPFacilitatorClient({
-  url: "https://x402.org/facilitator"
-});
+const facilitatorClient = new HTTPFacilitatorClient(facilitator);
 
 
 const server = new x402ResourceServer(facilitatorClient)
   .register("eip155:8453", new ExactEvmScheme());
-
 
 app.use(
   paymentMiddleware(
@@ -38,11 +35,9 @@ app.use(
   )
 );
 
-
 app.post("/ping", (req, res) => {
   res.json({ ok: true });
 });
 
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {});
+app.listen(PORT);
