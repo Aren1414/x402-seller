@@ -5,14 +5,18 @@ import { HTTPFacilitatorClient } from "@x402/core/server";
 
 const app = express();
 
+
 const payTo = "0xb46043d161bde18ef6974217a686f381b1e91138";
+
 
 const facilitatorClient = new HTTPFacilitatorClient({
   url: "https://x402.org/facilitator"
 });
 
+
 const server = new x402ResourceServer(facilitatorClient)
-  .register("eip155:84532", new ExactEvmScheme());
+  .register("eip155:8453", new ExactEvmScheme());
+
 
 app.use(
   paymentMiddleware(
@@ -22,7 +26,7 @@ app.use(
           {
             scheme: "exact",
             price: "$0.001",
-            network: "eip155:84532",
+            network: "eip155:8453",
             payTo
           }
         ],
@@ -34,8 +38,11 @@ app.use(
   )
 );
 
+
 app.post("/ping", (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(4021, () => {});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {});
